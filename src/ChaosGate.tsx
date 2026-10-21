@@ -12,8 +12,20 @@ const CRAWL: L[] = [
   { en: 'You are about to leave the professional version of this portfolio.', ja: 'このポートフォリオの、きちんとした版から離れようとしています。' },
   { en: 'This mode contains MUSIC, LOUD SOUNDS and JUMPSCARES.', ja: 'このモードには、音楽、大きな音、びっくり演出が含まれます。' },
   { en: 'IT IS NOT PROFESSIONAL. Do not open it at work, in a meeting or in an interview.', ja: 'プロフェッショナルな内容ではありません。職場、会議、面接中には開かないでください。' },
+  { en: 'You can leave at any time: press Escape.', ja: 'いつでもEscキーを押せば終了できます。' },
   { en: 'Press OK only if you accept all of the above.', ja: '上記すべてに同意する場合のみ、OKを押してください。' },
 ]
+// The first screen is deliberately plain and professional: it says what this mode is before anything playful happens.
+const NOTICE: { title: L; body: L[]; back: L; go: L } = {
+  title: { en: 'Before you continue', ja: '続ける前に' },
+  body: [
+    { en: 'The mode behind this button was made as a joke by the author of this portfolio. It is not part of the professional presentation of the work, and it has no bearing on any application or evaluation.', ja: 'このボタンの先のモードは、本ポートフォリオの作者が冗談として作成したものです。作品の専門的な紹介には含まれず、応募や評価とは一切関係がありません。' },
+    { en: 'It contains music, loud sound effects, sudden visual effects and humour that is not suitable for a workplace, a meeting or an interview.', ja: '音楽、大きな効果音、突然の視覚効果、そして職場・会議・面接にはふさわしくないユーモアが含まれます。' },
+    { en: 'If you are reviewing this portfolio in a professional capacity, please go back: everything relevant is in the standard version. If you proceed, you can leave at any time with the Escape key or the Restore order button.', ja: '専門的な立場でこのポートフォリオをご覧の場合は、お戻りください。必要な内容はすべて通常版にあります。続ける場合も、Escキーまたは「元に戻す」ボタンでいつでも終了できます。' },
+  ],
+  back: { en: 'Go back', ja: '戻る' },
+  go: { en: 'Proceed', ja: '進む' },
+}
 const STEPS: { q: L; yes: L; no: L }[] = [
   { q: { en: 'Are you sure?', ja: '本当によろしいですか？' }, yes: { en: 'Yes', ja: 'はい' }, no: { en: 'No, take me back', ja: 'いいえ、戻る' } },
   { q: { en: 'Are you really sure?', ja: '本当に、本当によろしいですか？' }, yes: { en: 'Yes, really', ja: 'はい、本当に' }, no: { en: 'Not really', ja: 'やっぱりやめる' } },
@@ -26,14 +38,14 @@ const STEPS: { q: L; yes: L; no: L }[] = [
 
 /** CHAOS gate: a long opening crawl, then a run of increasingly silly "are you sure" dialogs. Only a full run of Yes turns Chaos on. */
 export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; onConfirm: () => void; onCancel: () => void }) {
-  const [step, setStep] = useState(-1) // -1 = crawl
+  const [step, setStep] = useState(-2) // -2 = the plain notice, -1 = the crawl, 0 and up = the questions
   const reduced = useMemo(() => matchMedia('(prefers-reduced-motion: reduce)').matches, [])
   const t = (l: L) => l[lang]
   // the crawl has its own music: a looping chiptune track that runs until the visitor presses OK or leaves
   const [ready, setReady] = useState(reduced)
   const [canSkip, setCanSkip] = useState(false)
   useEffect(() => {
-    if (step >= 0) return
+    if (step !== -1) return // music starts only after the visitor has pressed Proceed
     const stop = startMusic()
     const fallback = window.setTimeout(() => setReady(true), 60000) // never leave the screen without a way forward
     const skip = window.setTimeout(() => setCanSkip(true), 10000) // a way past the crawl for phones, where typing a shortcut is not possible
@@ -64,7 +76,17 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
   const flip = (step % 2 === 1) !== (step === STEPS.length - 1) // the last question has Yes on the left
 
   return (
-    <div className="gate" role="dialog" aria-modal="true" aria-label={lang === 'en' ? 'Before you enter Chaos mode' : 'カオスモードに入る前に'}>
+    <div className={step === -2 ? 'gate pro' : 'gate'} role="dialog" aria-modal="true" aria-label={lang === 'en' ? 'Before you enter Chaos mode' : 'カオスモードに入る前に'}>
+      {step === -2 ? (
+        <div className="notice">
+          <h2>{t(NOTICE.title)}</h2>
+          {NOTICE.body.map((b) => <p key={b.en}>{t(b)}</p>)}
+          <div className="notice-actions">
+            <button className="btn" autoFocus onClick={onCancel}>{t(NOTICE.back)}</button>
+            <button className="btn notice-go" onClick={() => setStep(-1)}>{t(NOTICE.go)}</button>
+          </div>
+        </div>
+      ) : (<>
       <MuteButton lang={lang} />
       {!s ? (
         <>
@@ -90,6 +112,7 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
           </div>
         </div>
       )}
+      </>)}
     </div>
   )
 }

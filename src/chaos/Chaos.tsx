@@ -88,7 +88,6 @@ const TAUNTS: { en: string; ja: string }[] = [
   { en: 'Nice try.', ja: 'おしい！' },
   { en: 'Missed me!', ja: 'はずれ！' },
   { en: 'Is that all you have?', ja: 'それだけ？' },
-  { en: 'Try Esc. Just kidding. Try Esc.', ja: 'Escを試してみて。冗談です。Escを試して。' },
 ]
 const ACH_KEY = 'achievements'
 const loadAch = (): string[] => {
@@ -120,6 +119,8 @@ export default function Chaos() {
   const [intro, setIntro] = useState(true)
   const [pile, setPile] = useState(false)
   const [cookie, setCookie] = useState(false)
+  type Crumb = { id: number; x: number; y: number; s: number; r: number; d: number; dl: number }
+  const [storm, setStorm] = useState<Crumb[] | null>(null) // clicking Eat it fills the screen with cookies
   const [bites, setBites] = useState(0) // the cookie in the banner gets eaten bite by bite
   const [finale, setFinale] = useState(false)
   const [roll, setRoll] = useState(false)
@@ -154,7 +155,7 @@ export default function Chaos() {
   const noteTimer = useRef(0)
   const xBtn = useRef<HTMLButtonElement>(null)
   const xDodges = useRef(0)
-  const rickOpenedAt = useRef(0) // the X runs away from the pointer for the first minute, then holds still (Esc always closes)
+  const rickOpenedAt = useRef(0) // the X runs away from the pointer for the first 40 seconds, then holds still (Esc always closes)
   useEffect(() => { if (rick) rickOpenedAt.current = performance.now() }, [rick])
   const [xPos, setXPos] = useState<{ x: number; y: number } | null>(null)
   const [cenaPos, setCenaPos] = useState<{ x: number; y: number } | null>(null)
@@ -181,8 +182,10 @@ export default function Chaos() {
     return sched.current?.start({ id, tier, prompted, cooldownMs }) ?? false
   }, [])
 
+  const quietRef = useRef(false) // no comments, stamps or banners while the page is falling or being put back
   const lastSay = useRef<{ text: string; at: number; replayed: boolean } | null>(null)
   const sayText = useCallback((text: string, ms = 8000) => {
+    if (quietRef.current) return false
     setToast(text)
     sfx('ding')
     lastSay.current = { text, at: performance.now(), replayed: false }
@@ -283,7 +286,7 @@ export default function Chaos() {
     let n = 0, last = 0
     const c = (e: MouseEvent) => {
       const el = e.target as HTMLElement
-      if (el.closest('button, a, input, select, textarea, label, [role="tab"]')) return
+      if (el.closest('button, a, input, select, textarea, label, [role="tab"]') || quietRef.current) return
       const now = performance.now()
       if (now - last < 450) return
       last = now
@@ -363,6 +366,14 @@ export default function Chaos() {
     return () => clearTimeout(id)
   }, [])
   const closeCookie = () => { setCookie(false); setBites(0); try { sessionStorage.setItem('cookie', '1') } catch { /* ignore */ } }
+  const cookieStorm = () => {
+    sfx('chomp')
+    if (reduced()) return
+    const n = innerWidth < 700 ? 70 : 130
+    setStorm(Array.from({ length: n }, (_, i) => ({ id: i, x: Math.random() * 96, y: 6 + Math.random() * 88, s: 30 + Math.random() * 46, r: (Math.random() - 0.5) * 720, d: 0.9 + Math.random() * 0.9, dl: Math.random() * 1.5 })))
+    for (const [k, ms] of [[1, 250], [2, 600], [3, 1000], [4, 1500]] as const) setTimeout(() => sfx(k % 2 ? 'chomp' : 'pop'), ms)
+    setTimeout(() => setStorm(null), 4400)
+  }
   useEffect(() => {
     if (!cookie || reduced()) return
     const id = window.setInterval(() => {
@@ -623,6 +634,7 @@ export default function Chaos() {
     }
     if (reduced()) { say('g1', 4000); sched.current?.end(id); return }
     moonId.current = id
+    quietRef.current = true; setToast(null); setStorm(null)
     fall(stage === 0 ? 1 : -1)
     setPile(true)
     setPileStage(stage)
@@ -642,7 +654,7 @@ export default function Chaos() {
     setPile(false)
     setRestoring(true)
     clearTimeout(restoreTimer.current)
-    restoreTimer.current = window.setTimeout(() => setRestoring(false), ms + 300)
+    restoreTimer.current = window.setTimeout(() => { setRestoring(false); quietRef.current = false }, ms + 300)
     sched.current?.end(moonId.current)
   }, [])
 
@@ -800,7 +812,7 @@ export default function Chaos() {
         <div className="rick" role="dialog" aria-modal="true" aria-label={lang === 'en' ? 'A short interruption' : '少しだけ中断'}
           onPointerMove={(e) => {
             const x = xBtn.current
-            if (!x || performance.now() - rickOpenedAt.current > 60000) return
+            if (!x || performance.now() - rickOpenedAt.current > 40000) return
             const r = x.getBoundingClientRect()
             if (Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) > 160) return
             xDodges.current++
@@ -856,12 +868,17 @@ export default function Chaos() {
           <button className="toast-x" onClick={(e) => { e.stopPropagation(); setToast(null); sched.current?.noteDismiss() }} aria-label={lang === 'en' ? 'Close comment' : 'コメントを閉じる'}><X size={16} aria-hidden="true" /></button>
         </div>
       )}
-      {cookie && (
+      {cookie && !pile && !restoring && (
         <div className="cookie" role="dialog" aria-label="cookies">
           <span>{caption('g14', lang) ?? ''} <span className={`cookie-pic bites-${bites}`} aria-hidden="true">🍪</span></span>
-          <button className="btn" onClick={() => { sfx('chomp'); closeCookie() }}>
+          <button className="btn" onClick={() => { closeCookie(); cookieStorm() }}>
             {lang === 'en' ? 'Eat it' : '食べる'}
           </button>
+        </div>
+      )}
+      {storm && (
+        <div className="cookie-storm" aria-hidden="true">
+          {storm.map((c) => <span key={c.id} style={{ ['--x' as string]: `${c.x}vw`, ['--y' as string]: `${c.y}vh`, ['--s' as string]: `${c.s}px`, ['--r' as string]: `${c.r}deg`, ['--d' as string]: `${c.d}s`, ['--dl' as string]: `${c.dl}s` }}>🍪</span>)}
         </div>
       )}
       {finale && (

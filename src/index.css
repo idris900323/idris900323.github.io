@@ -336,3 +336,16 @@ p, li, figcaption { text-wrap: pretty; }
 @media (max-aspect-ratio: 1/1), (max-width: 800px) {
   .sim-screen canvas { --floor: max(calc(150px * var(--share, 1)), min(calc((100vw - 32px) / var(--ar, 1.6)), calc(30svh * var(--share, 1)))); }
 }
+
+/* the optional extra at the very bottom: quiet, clearly labelled */
+.one-more { padding: 40px 0 28px; border-top: 1px solid var(--line); }
+.one-more h2 { font-size: 15px; margin: 0 0 6px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+.one-more p { margin: 0 0 14px; max-width: 60ch; color: var(--muted); font-size: 15px; }
+
+/* the plain notice before Chaos: it looks like the rest of the site */
+.gate.pro { background: var(--bg); color: var(--ink); overflow-y: auto; }
+.notice { width: min(640px, calc(100% - 32px)); margin: auto; padding: 28px 0; }
+.notice h2 { font: 600 clamp(22px, 3.2vw, 28px)/1.25 var(--font-head); margin: 0 0 16px; color: var(--ink); }
+.notice p { margin: 0 0 14px; line-height: 1.6; color: var(--ink); text-wrap: pretty; }
+.notice-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.notice-go { border-color: var(--accent); }

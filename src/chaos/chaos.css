@@ -148,3 +148,9 @@ h1[data-name][data-prank] .ltr { transform: translate(var(--tx), var(--ty)) rota
 .x-taunt.left { transform: translateX(-100%); }
 @keyframes taunt-in { from { opacity: 0; scale: .8; } to { opacity: 1; scale: 1; } }
 @media (prefers-reduced-motion: reduce) { .x-taunt { animation: none; } }
+
+/* Eat it: cookies pour in and fill the screen, then fade away */
+.cookie-storm { position: fixed; inset: 0; z-index: 350; pointer-events: none; overflow: hidden; animation: cs-out .8s ease-in 3.4s forwards; }
+.cookie-storm span { position: absolute; left: var(--x); top: 0; font-size: var(--s); line-height: 1; opacity: 0; animation: cs-fall var(--d) cubic-bezier(.35, .1, .55, 1.15) var(--dl) both; }
+@keyframes cs-fall { from { opacity: 1; transform: translateY(-20vh) rotate(0deg); } to { opacity: 1; transform: translateY(var(--y)) rotate(var(--r)); } }
+@keyframes cs-out { to { opacity: 0; } }

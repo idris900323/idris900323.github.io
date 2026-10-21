@@ -75,7 +75,7 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   await p.context().close()
 }
 
-// 5. rick roll: X runs for a minute, then holds still; Esc always closes
+// 5. rick roll: X runs for 40 seconds, then holds still; Esc always closes
 {
   const p = await fresh({ rand: 0.01, skip: ['cena', 'cookie'] })
   for (let i = 0; i < 80 && !(await p.locator('.rick').count()); i++) { await p.mouse.wheel(0, 500); await sleep(60) }
@@ -86,14 +86,14 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   let moved = false
   for (let i = 0; i < 6 && !moved; i++) { const c = await pos(); await p.mouse.move(c[0] + 24, c[1] + 24); await sleep(250); const d = await pos(); moved = Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) > 40 }
   out(moved, 'rick X runs away from the pointer')
-  await sleep(31000)
+  await sleep(21000)
   const c0 = await pos(); await p.mouse.move(c0[0] + 24, c0[1] + 24); await sleep(400)
   const d0 = await pos()
-  out(Math.abs(d0[0] - c0[0]) + Math.abs(d0[1] - c0[1]) > 40, 'rick X is still running after 30 s')
-  await sleep(31000)
+  out(Math.abs(d0[0] - c0[0]) + Math.abs(d0[1] - c0[1]) > 40, 'rick X is still running after 20 s')
+  await sleep(21000)
   const c = await pos(); await p.mouse.move(c[0] + 24, c[1] + 24); await sleep(400)
   const d = await pos()
-  out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after a minute the rick X stands still')
+  out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after 40 s the rick X stands still')
   await p.keyboard.press('Escape'); await sleep(300)
   out((await p.locator('.rick').count()) === 0, 'Esc closes the rick roll')
   await p.context().close()
@@ -136,10 +136,13 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   const press = async () => { await p.getByRole('button', { name: /Do not press/ }).click(); await sleep(8000) }
   await press()
   out((await p.locator('.pile-note').count()) === 1, 'gravity: the notice is on screen')
+  await p.mouse.click(700, 300); await p.mouse.click(300, 500); await sleep(500)
+  out((await p.locator('.toast, .stamp, .cookie').count()) === 0, 'gravity: no comments, stamps or banners pop up on top')
   await p.locator('.pile-x').click()
   await sleep(1500)
   out((await p.locator('.moon').count()) === 0, 'no second press while the page is still being put back')
   const mid = await p.evaluate(() => scrollY)
+  out((await p.locator('.toast, .stamp, .cookie').count()) === 0, 'while the page is being put back: still no comments')
   await sleep(3000)
   out((await p.evaluate(() => document.documentElement.classList.contains('all-visible'))), 'the restore is still going after 4.5 s (slow)')
   await sleep(7000)
@@ -160,11 +163,12 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   const p = await ctx.newPage()
   await p.goto(url + '?lang=en', { waitUntil: 'networkidle' })
   await p.getByRole('button', { name: /CHAOS/ }).click()
+  await p.getByRole('button', { name: 'Proceed', exact: true }).click()
   await sleep(9000)
-  out((await p.getByRole('button', { name: 'Proceed' }).count()) === 0, 'no Proceed button before 10 s')
+  out((await p.getByRole('button', { name: 'Proceed', exact: true }).count()) === 0, 'no skip button before 10 s')
   await sleep(2500)
-  await p.getByRole('button', { name: 'Proceed' }).click()
-  out((await p.locator('.gate-card').count()) === 1, 'Proceed goes to the questions')
+  await p.getByRole('button', { name: 'Proceed', exact: true }).click()
+  out((await p.locator('.gate-card').count()) === 1, 'the skip button goes to the questions')
   for (let i = 0; i < 4; i++) { await p.locator('.gate-card .chaos-btn').click(); await sleep(150) }
   const q = await p.locator('.gate-card h2').innerText()
   out(/mute button/i.test(q), 'the sound question mentions the mute button: ' + q)

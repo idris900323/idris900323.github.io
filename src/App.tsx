@@ -39,7 +39,9 @@ const ui = {
   },
   interactive: { en: 'Interactive explanation', ja: 'インタラクティブ解説' },
   summary: { objective: { en: 'Objective', ja: '目的' }, method: { en: 'Method', ja: '方法' }, status: { en: 'Status', ja: '現状' }, mine: { en: 'My part', ja: '担当' } },
-  chaosOn: { en: 'CHAOS', ja: 'カオス' },
+  chaosOn: { en: 'CHAOS mode', ja: 'カオスモード' },
+  oneMore: { en: 'One more thing', ja: 'もう一つだけ' },
+  oneMoreBody: { en: 'An optional extra: a playful version of this site, made as a joke. It has sound and is not professional.', ja: 'お楽しみ（任意）：冗談で作った、遊び心のあるバージョンです。音が出ます。プロフェッショナルな内容ではありません。' },
   chaosOff: { en: 'Restore order', ja: '元に戻す' },
   asOf: { en: 'as of', ja: '時点' },
   profile: { en: 'View profile', ja: 'プロフィールを見る' },
@@ -92,10 +94,7 @@ export default function App() {
           <button className="btn" onClick={() => setLang(lang === 'en' ? 'ja' : 'en')} lang={lang === 'en' ? 'ja' : 'en'} title={lang === 'en' ? 'Switch language' : '言語切替'}>
             {lang === 'en' ? '日本語' : 'English'}
           </button>
-          <button className="btn chaos-btn" onClick={() => (mode === 'calm' ? (setEvicted(false), setGate(true)) : toggleMode())} aria-pressed={mode === 'chaos'} title={mode === 'calm' ? (lang === 'en' ? 'Optional playful mode, with sound' : '任意のお楽しみモード（音あり）') : undefined}
-            onMouseEnter={() => { void import('./chaos/Chaos') }} onFocus={() => { void import('./chaos/Chaos') }}>
-            {mode === 'calm' ? <><Rocket size={15} aria-hidden="true" /> {t(ui.chaosOn)}</> : t(ui.chaosOff)}
-          </button>
+          {mode === 'chaos' && <button className="btn chaos-btn" onClick={toggleMode} aria-pressed>{t(ui.chaosOff)}</button>}
         </div>
       </header>
 
@@ -105,7 +104,7 @@ export default function App() {
           <button className="btn" onClick={() => setEvicted(false)} aria-label={lang === 'en' ? 'Dismiss' : '閉じる'}><X size={16} aria-hidden="true" /></button>
         </div>
       )}
-      {gate && <ChaosGate lang={lang} onCancel={() => setGate(false)} onConfirm={() => { setGate(false); toggleMode() }} />}
+      {gate && <ChaosGate lang={lang} onCancel={() => setGate(false)} onConfirm={() => { setGate(false); scrollTo({ top: 0, behavior: 'instant' }); toggleMode() }} />}
 
       <main id="main">
         <section className="cover" style={{ padding: '72px 0 56px' }}>
@@ -142,7 +141,7 @@ export default function App() {
           </section>
 
           <section id="work" aria-labelledby="wk" style={{ paddingTop: 24 }}>
-            <h2 id="wk">{t(ui.selected)}</h2>
+            <h2 id="wk" className="sr-only">{t(ui.selected)}</h2>
             {byTier('flagship').map((p) => <ProjectSection key={p.slug} p={p} lite={lite} />)}
             <h2 style={{ marginTop: 56 }}>{t(ui.grant)}</h2>
             {byTier('grant').map((p) => <ProjectSection key={p.slug} p={p} lite={lite} />)}
@@ -241,6 +240,19 @@ export default function App() {
           </div>
         </section>
       </main>
+
+      {mode === 'calm' && (
+        <section className="one-more" aria-labelledby="om">
+          <div className="wrap">
+            <h2 id="om">{t(ui.oneMore)}</h2>
+            <p>{t(ui.oneMoreBody)}</p>
+            <button className="btn" onClick={() => { setEvicted(false); setGate(true) }}
+              onMouseEnter={() => { void import('./chaos/Chaos') }} onFocus={() => { void import('./chaos/Chaos') }}>
+              <Rocket size={15} aria-hidden="true" /> {t(ui.chaosOn)}
+            </button>
+          </div>
+        </section>
+      )}
 
       <footer style={{ borderTop: '1px solid var(--line)', padding: '24px 0', color: 'var(--muted)', fontSize: 14 }}>
         <div className="wrap">{lite ? t(ui.lite) : ' '}</div>

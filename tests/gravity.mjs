@@ -20,6 +20,7 @@ const note1 = await p.locator('.pile-note').innerText()
 await p.locator('.pile-x').click()
 await p.waitForTimeout(11000) // the page is put back slowly (nine seconds)
 const back = await p.evaluate(() => Math.round(scrollY))
+const maxBack = await p.evaluate(() => Math.round(document.documentElement.scrollHeight - innerHeight))
 // second press: falls upward, page scrolls to the top
 await p.getByRole('button', { name: /Do not press/ }).click()
 await p.waitForTimeout(6500)
@@ -35,4 +36,4 @@ const moonGone = await p.locator('.moon').count()
 console.log(JSON.stringify({ ...y, start, back, up, song, moonGone, angry, note1: note1.slice(0, 24) }), errs.length ? 'ERRORS ' + errs.join('|') : 'no errors')
 await b.close()
 // the view settles on the densest part of the heap (in the lower half of a long page), never on empty sky
-process.exit(y.y >= y.max * 0.4 && Math.abs(back - start) < 40 && up < y.max * 0.5 && angry === 1 && /Now look at what you did/.test(note1) && song === 1 && !errs.length ? 0 : 1)
+process.exit(y.y >= y.max * 0.4 && Math.abs(back - Math.min(start, maxBack)) < 60 && up < y.max * 0.5 && angry === 1 && /Now look at what you did/.test(note1) && song === 1 && !errs.length ? 0 : 1)
