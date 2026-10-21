@@ -125,10 +125,12 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
       {!s ? (
         <>
           <div className={reduced ? 'crawl crawl-static' : 'crawl'}>
-            <div className="crawl-inner" ref={crawlRef} onAnimationEnd={() => setReady(true)}>
-              <h2>{t(TITLE)}</h2>
-              <h3>{t(SUB)}</h3>
-              {CRAWL.map((p) => <p key={p.en}>{t(p)}</p>)}
+            <div className="crawl-plane">
+              <div className="crawl-inner" ref={crawlRef} onAnimationEnd={() => setReady(true)}>
+                <h2>{t(TITLE)}</h2>
+                <h3>{t(SUB)}</h3>
+                {CRAWL.map((p) => <p key={p.en}>{t(p)}</p>)}
+              </div>
             </div>
           </div>
           <div className="gate-actions">
