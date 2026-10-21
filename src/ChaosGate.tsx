@@ -65,7 +65,7 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
     const el = crawlRef.current
     if (!el || step !== -1 || reduced) return
     const box = el.parentElement!.clientHeight, h = el.offsetHeight
-    const sec = Math.max(45, Math.min(110, (box + h) / 70))
+    const sec = Math.max(45, Math.min(100, (box + h) / 80))
     el.style.setProperty('--crawl-end', `-${h + 60}px`)
     el.style.animationDuration = `${sec}s`
     crawlMs.current = sec * 1000
