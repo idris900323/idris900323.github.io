@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { sfx, startMusic } from './chaos/sfx'
 import MuteButton from './chaos/MuteButton'
 
@@ -7,13 +7,16 @@ type L = { en: string; ja: string }
 
 // NEEDS-NATIVE-REVIEW (all JA strings in this file)
 const TITLE: L = { en: 'WARNING', ja: '警告' }
-const SUB: L = { en: 'BEFORE YOU PRESS OK', ja: 'OKを押す前に' }
+const SUB: L = { en: 'A SERIOUS ANNOUNCEMENT (SORT OF)', ja: '重大なお知らせ（のようなもの）' }
 const CRAWL: L[] = [
-  { en: 'You are about to leave the professional version of this portfolio.', ja: 'このポートフォリオの、きちんとした版から離れようとしています。' },
-  { en: 'This mode contains MUSIC, LOUD SOUNDS and JUMPSCARES.', ja: 'このモードには、音楽、大きな音、びっくり演出が含まれます。' },
-  { en: 'IT IS NOT PROFESSIONAL. Do not open it at work, in a meeting or in an interview.', ja: 'プロフェッショナルな内容ではありません。職場、会議、面接中には開かないでください。' },
-  { en: 'You can leave at any time: press Escape.', ja: 'いつでもEscキーを押せば終了できます。' },
-  { en: 'Press OK only if you accept all of the above.', ja: '上記すべてに同意する場合のみ、OKを押してください。' },
+  { en: 'A long time ago, in a portfolio not so far away...', ja: 'ずっと昔、そう遠くないポートフォリオで…' },
+  { en: 'You are about to leave the sensible side of this website. The sensible side says goodbye. It will wait for you quietly, with a cup of tea.', ja: 'あなたはこのサイトのまともな側を離れようとしています。まともな側は静かにお茶を飲みながら、あなたの帰りを待っています。' },
+  { en: 'Ahead: MUSIC. Questionable music, at exactly the volume that the one person you did not want to hear it will hear it.', ja: 'この先：音楽。聞かれたくない人にだけ、ちょうど聞こえる音量の、ちょっと怪しい音楽です。' },
+  { en: 'Ahead: LOUD NOISES, a rocket or two, and at least one moment that will make you say a word you would never say in an interview.', ja: 'この先：大きな音、ロケットが一つか二つ、そして面接では絶対に言わない言葉をつい口にしてしまう瞬間が、少なくとも一つ。' },
+  { en: 'The author promises all of this was done on purpose. The author also promises the little robot is not plotting anything. The robot declined to comment.', ja: '作者は、これらすべてがわざとだと約束します。小さなロボットが何も企んでいないことも約束します。ロボットはコメントを控えています。' },
+  { en: 'Do NOT open this at work, in a meeting, on a train, or in front of anyone you hope will hire you. If you are a professor: hello, we are very sorry, please press back.', ja: '職場、会議、電車の中、そして採用してほしい人の前では、開かないでください。教授の皆さま：こんにちは、申し訳ありません、お戻りください。' },
+  { en: 'If you panic, press ESCAPE. Escape is your friend. Escape has never let anyone down.', ja: 'パニックになったら、Escキーを押してください。Escは味方です。Escは今まで誰も裏切ったことがありません。' },
+  { en: 'Press OK only if you accept all of the above, and a few things that were not mentioned above.', ja: '上記すべてと、上記に書かれていないいくつかのことに同意する場合のみ、OKを押してください。' },
 ]
 // The first screen is deliberately plain and professional: it says what this mode is before anything playful happens.
 const NOTICE: { title: L; body: L[]; back: L; go: L } = {
@@ -25,6 +28,11 @@ const NOTICE: { title: L; body: L[]; back: L; go: L } = {
   ],
   back: { en: 'Go back', ja: '戻る' },
   go: { en: 'Proceed', ja: '進む' },
+}
+const CAUGHT: { title: L; body: L; again: L } = {
+  title: { en: 'Heh heh.', ja: 'ふふふ。' },
+  body: { en: 'I knew you did not read it. Back to the calm side you go. Read it properly next time: there is a quiz.', ja: '読んでいないと思っていました。穏やかな側にお戻りください。次回はちゃんと読んでくださいね。テストがあります。' },
+  again: { en: 'Back to Calm', ja: '穏やかな側へ戻る' },
 }
 const STEPS: { q: L; yes: L; no: L }[] = [
   { q: { en: 'Are you sure?', ja: '本当によろしいですか？' }, yes: { en: 'Yes', ja: 'はい' }, no: { en: 'No, take me back', ja: 'いいえ、戻る' } },
@@ -44,10 +52,28 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
   // the crawl has its own music: a looping chiptune track that runs until the visitor presses OK or leaves
   const [ready, setReady] = useState(reduced)
   const [canSkip, setCanSkip] = useState(false)
+  const [caught, setCaught] = useState(false) // said they did not read the message on the last question
+  const crawlRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!caught) return
+    const id = window.setTimeout(onCancel, 7000) // the notice stays long enough to read, then the page goes back to Calm
+    return () => clearTimeout(id)
+  }, [caught, onCancel])
+  const crawlMs = useRef(70000) // how long the crawl runs (set once it is measured)
+  // the crawl scrolls at a steady pace whatever the amount of text: measure it, set how far it travels and how long it takes
+  useLayoutEffect(() => {
+    const el = crawlRef.current
+    if (!el || step !== -1 || reduced) return
+    const box = el.parentElement!.clientHeight, h = el.offsetHeight
+    const sec = Math.max(45, Math.min(110, (box + h) / 70))
+    el.style.setProperty('--crawl-end', `-${h + 60}px`)
+    el.style.animationDuration = `${sec}s`
+    crawlMs.current = sec * 1000
+  }, [step, reduced, lang])
   useEffect(() => {
     if (step !== -1) return // music starts only after the visitor has pressed Proceed
     const stop = startMusic()
-    const fallback = window.setTimeout(() => setReady(true), 60000) // never leave the screen without a way forward
+    const fallback = window.setTimeout(() => setReady(true), crawlMs.current + 10000) // never leave the screen without a way forward
     const skip = window.setTimeout(() => setCanSkip(true), 10000) // a way past the crawl for phones, where typing a shortcut is not possible
     return () => { stop(); clearTimeout(fallback); clearTimeout(skip) }
   }, [step])
@@ -86,12 +112,20 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
             <button className="btn notice-go" onClick={() => setStep(-1)}>{t(NOTICE.go)}</button>
           </div>
         </div>
+      ) : caught ? (
+        <div className="gate-card">
+          <h2>{t(CAUGHT.title)}</h2>
+          <p className="caught">{t(CAUGHT.body)}</p>
+          <div className="gate-actions">
+            <button className="btn chaos-btn" autoFocus onClick={onCancel}>{t(CAUGHT.again)}</button>
+          </div>
+        </div>
       ) : (<>
       <MuteButton lang={lang} />
       {!s ? (
         <>
           <div className={reduced ? 'crawl crawl-static' : 'crawl'}>
-            <div className="crawl-inner" onAnimationEnd={() => setReady(true)}>
+            <div className="crawl-inner" ref={crawlRef} onAnimationEnd={() => setReady(true)}>
               <h2>{t(TITLE)}</h2>
               <h3>{t(SUB)}</h3>
               {CRAWL.map((p) => <p key={p.en}>{t(p)}</p>)}
@@ -107,7 +141,7 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
         <div className="gate-card">
           <h2>{t(s.q)}</h2>
           <div className="gate-actions" style={{ flexDirection: flip ? 'row-reverse' : 'row' }}>
-            <button className={step === STEPS.length - 1 ? 'btn chaos-btn' : 'btn'} onClick={onCancel}>{t(s.no)}</button>
+            <button className={step === STEPS.length - 1 ? 'btn chaos-btn' : 'btn'} onClick={step === STEPS.length - 1 ? () => { sfx('error'); setCaught(true) } : onCancel}>{t(s.no)}</button>
             <button key={step} className={step === STEPS.length - 1 ? 'btn' : 'btn chaos-btn'} autoFocus onClick={advance}>{t(s.yes)}</button>
           </div>
         </div>

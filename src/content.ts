@@ -4,7 +4,7 @@
 export type L = { en: string; ja: string }
 
 export type Status =
-  | 'BUILT' | 'GRANT' | 'IN DEVELOPMENT' | 'PROPOSED' | 'SIMULATED' | 'CONCEPTUAL' | 'INDUSTRY' | 'OPEN'
+  | 'BUILT' | 'GRANT' | 'IN DEVELOPMENT' | 'PROPOSED' | 'SIMULATED' | 'CONCEPTUAL' | 'INDUSTRY' | 'INTERNSHIP' | 'OPEN'
 
 export const statusLabel: Record<Status, L> = {
   BUILT: { en: 'Built', ja: '製作済み' },
@@ -14,6 +14,7 @@ export const statusLabel: Record<Status, L> = {
   SIMULATED: { en: 'Proposed · simulated', ja: '提案・シミュレーション済み' },
   CONCEPTUAL: { en: 'Conceptual · untested', ja: '概念検討・未検証' },
   INDUSTRY: { en: 'Research placement', ja: '研究インターン' },
+  INTERNSHIP: { en: 'Industry internship', ja: '企業インターン' },
   OPEN: { en: 'Details to be added', ja: '詳細は追って追加' },
 }
 
@@ -210,8 +211,8 @@ export const projects: Project[] = [
     status: 'INDUSTRY',
     loops: ['act', 'sense'],
     blurb: {
-      en: 'Building a 3D bin-picking cell on an ABB IRB 1600 with SICK vision, validated first in ABB RobotStudio. Hands-on with the arm, I identified a real gripper-orientation limitation in the task.',
-      ja: 'ABB IRB 1600とSICKビジョンによる3Dビンピッキングセルを構築中。まずABB RobotStudioで検証しています。実機を扱う中で、作業におけるグリッパー姿勢の実際の制約を特定しました。',
+      en: 'Working on an ABB IRB 1600 industrial robot in a 3D bin-picking cell with SICK vision, validated first in ABB RobotStudio. Hands-on with the arm, I identified a real gripper-orientation limitation in the task.',
+      ja: 'SICKビジョンを使った3Dビンピッキングセルで、ABB IRB 1600産業用ロボットに取り組んでいます。まずABB RobotStudioで検証しています。実機を扱う中で、作業におけるグリッパー姿勢の実際の制約を特定しました。',
     },
     summary: { status: { en: 'Since July 2026. A research placement at the ABB Global Centre of Excellence hosted at my college; not employment by ABB.', ja: '2026年7月〜。大学内に設置されたABB Global CoEでの研究インターンで、ABB社での雇用ではありません。' } },
     media: [IMG('image18', 1712, 856, { en: 'Workcell with an industrial robot arm, a parts bin and a chute.', ja: '産業用ロボットアーム、部品ビン、シュートのあるワークセル。' })],
@@ -337,7 +338,7 @@ export const projects: Project[] = [
     tier: 'foundation',
     eyebrow: { en: 'Internship', ja: 'インターン' },
     title: { en: 'Electronics hardware internship, Subtlebotic', ja: '電子ハードウェアインターン（Subtlebotic）' },
-    status: 'INDUSTRY',
+    status: 'INTERNSHIP',
     loops: ['sense', 'act'],
     blurb: {
       en: 'Schematic and PCB design intern, September to November 2025. The textbook boost converter has four parts; the real one needed a switching IC, a feedback network, ratings and layout.',
@@ -393,7 +394,8 @@ export const learning: { theme: L; items: L[] }[] = [
       { en: 'NPTEL Computer Vision and Image Processing: Fundamentals and Applications (May 2026)', ja: 'NPTEL コンピュータビジョンと画像処理：基礎と応用（2026年5月）' },
       { en: 'NPTEL Industrial Robotics: Theories for Implementation (December 2025)', ja: 'NPTEL 産業用ロボティクス：実装のための理論（2025年12月）' },
       { en: 'NPTEL Principle of Hydraulic Machines and System Design (December 2025)', ja: 'NPTEL 油圧機械とシステム設計の原理（2025年12月）' },
-      { en: 'NPTEL Experimental Robotics and Introduction to IoT, 90% (May 2025)', ja: 'NPTEL 実験ロボティクス、IoT入門 90%（2025年5月）' },
+      { en: 'NPTEL Experimental Robotics (May 2025)', ja: 'NPTEL 実験ロボティクス（2025年5月）' },
+      { en: 'NPTEL Introduction to IoT, 90% (May 2025)', ja: 'NPTEL IoT入門 90%（2025年5月）' },
       { en: 'Robotics automation and software simulation with AI, industrial training (My Equation, September 2024)', ja: 'ロボット自動化とAIを用いたソフトウェアシミュレーション 産業研修（My Equation、2024年9月）' },
     ],
   },

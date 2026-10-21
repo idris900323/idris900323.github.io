@@ -154,3 +154,8 @@ h1[data-name][data-prank] .ltr { transform: translate(var(--tx), var(--ty)) rota
 .cookie-storm span { position: absolute; left: var(--x); top: 0; font-size: var(--s); line-height: 1; opacity: 0; animation: cs-fall var(--d) cubic-bezier(.35, .1, .55, 1.15) var(--dl) both; }
 @keyframes cs-fall { from { opacity: 1; transform: translateY(-20vh) rotate(0deg); } to { opacity: 1; transform: translateY(var(--y)) rotate(var(--r)); } }
 @keyframes cs-out { to { opacity: 0; } }
+
+/* while the page is being put back: a notice and a countdown that does not stop at zero */
+.wait-note { position: fixed; left: 50%; top: 84px; transform: translateX(-50%); z-index: 345; display: flex; align-items: baseline; gap: 16px; background: #14193a; color: #fff; border: 4px solid #ffd23f; border-radius: 18px; padding: 10px 22px; box-shadow: 6px 6px 0 #ffd23f; pointer-events: none; }
+.wait-note p { margin: 0; font: 700 clamp(16px, 2.2vw, 22px) var(--font-body); }
+.wait-note strong { font: 800 clamp(30px, 5vw, 48px)/1 var(--font-mono); min-width: 2.2ch; text-align: right; font-variant-numeric: tabular-nums; }

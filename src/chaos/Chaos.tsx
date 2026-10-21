@@ -151,6 +151,12 @@ export default function Chaos() {
   const [pileStage, setPileStage] = useState(0)
   const [restoring, setRestoring] = useState(false) // the page is still being put back: no second press yet
   const restoreTimer = useRef(0)
+  const [count, setCount] = useState(5) // the "you have to wait" countdown: starts at 5 and does not stop at 0
+  useEffect(() => {
+    if (!restoring) return
+    const id = window.setInterval(() => setCount((c) => (c <= -10 ? c : c - 1)), 1000)
+    return () => clearInterval(id)
+  }, [restoring])
   const [noteUp, setNoteUp] = useState(false)
   const noteTimer = useRef(0)
   const xBtn = useRef<HTMLButtonElement>(null)
@@ -166,8 +172,7 @@ export default function Chaos() {
   const sayTaunt = useCallback((x: number, y: number) => {
     const n = ++tauntN.current
     const t = TAUNTS[(n * 5 + Math.floor(Math.random() * 3)) % TAUNTS.length]
-    setTaunt({ id: n, text: t[langRef.current], x, y })
-    sfx('boing')
+    setTaunt({ id: n, text: t[langRef.current], x, y }) // silent: the video has its own audio
     clearTimeout(tauntTimer.current)
     tauntTimer.current = window.setTimeout(() => setTaunt(null), 1500)
   }, [])
@@ -652,6 +657,7 @@ export default function Chaos() {
     collapse.current = null
     sfx('restore')
     setPile(false)
+    setCount(5)
     setRestoring(true)
     clearTimeout(restoreTimer.current)
     restoreTimer.current = window.setTimeout(() => { setRestoring(false); quietRef.current = false }, ms + 300)
@@ -840,6 +846,12 @@ export default function Chaos() {
         <button className="moon" onClick={press} aria-label={lang === 'en' ? 'Do not press (moon)' : '押さないで（月）'}>
           🌙 <span>{lang === 'en' ? 'Do not press' : '押さないで'}</span>
         </button>
+      )}
+      {restoring && (
+        <div className="wait-note" role="status">
+          <p>{lang === 'en' ? 'Yes, you have to wait.' : 'はい、待つ必要があります。'}</p>
+          <strong aria-hidden="true">{count}</strong>
+        </div>
       )}
       {pile && noteUp && (
         <div className={pileStage === 1 ? 'pile-note angry' : 'pile-note'} role="alertdialog" aria-label={lang === 'en' ? 'A message from the page' : 'ページからのメッセージ'}>
@@ -1031,7 +1043,7 @@ function gravityCollapse(dir: 1 | -1 = 1): { stop: (slow?: boolean) => number } 
   draw()
   return {
     stop(slow = false) {
-      const ms = slow ? 9000 : 900 // "slowly" means slowly: everything drifts back over nine seconds
+      const ms = slow ? 15000 : 900 // "slowly" means slowly: everything drifts back over fifteen seconds, with a countdown
       cancelAnimationFrame(raf)
       Runner.stop(runner); Composite.clear(engine.world, false); Engine.clear(engine)
       for (const i of items) { i.el.style.transition = `transform ${ms}ms cubic-bezier(.45, 0, .3, 1)`; i.el.style.transform = 'none' }
