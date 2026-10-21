@@ -41,7 +41,7 @@ const ui = {
   summary: { objective: { en: 'Objective', ja: '目的' }, method: { en: 'Method', ja: '方法' }, status: { en: 'Status', ja: '現状' }, mine: { en: 'My part', ja: '担当' } },
   chaosOn: { en: 'CHAOS mode', ja: 'カオスモード' },
   oneMore: { en: 'One more thing', ja: 'もう一つだけ' },
-  oneMoreBody: { en: 'An optional extra: a playful version of this site, made as a joke. It has sound and is not professional.', ja: 'お楽しみ（任意）：冗談で作った、遊び心のあるバージョンです。音が出ます。プロフェッショナルな内容ではありません。' },
+  oneMoreBody: { en: 'An optional extra: a playful version of this site, made as a joke.', ja: 'お楽しみ（任意）：冗談で作った、遊び心のあるバージョンです。' },
   chaosOff: { en: 'Restore order', ja: '元に戻す' },
   asOf: { en: 'as of', ja: '時点' },
   profile: { en: 'View profile', ja: 'プロフィールを見る' },
