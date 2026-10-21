@@ -10,8 +10,9 @@ import { chaosConfig, type GagId } from './config'
 import { Scheduler, type Tier } from './scheduler'
 import { caption } from './captions'
 import { subscribe } from '../bus'
+import { achievementsTaken, keepAchievementsForNextVisit, setCurrentAchievements, takeInitialAchievements } from './achievementsStore'
 import { X } from 'lucide-react'
-import { angerBeep, fall, impact, sfx } from './sfx'
+import { angerBeep, fall, impact, sfx, startConstruction } from './sfx'
 import MuteButton from './MuteButton'
 import { useStore } from '../store'
 import Scout from '../Scout'
@@ -89,13 +90,11 @@ const TAUNTS: { en: string; ja: string }[] = [
   { en: 'Missed me!', ja: 'はずれ！' },
   { en: 'Is that all you have?', ja: 'それだけ？' },
 ]
-const ACH_KEY = 'achievements'
-const loadAch = (): string[] => {
-  try {
-    const v = JSON.parse(localStorage.getItem(ACH_KEY) ?? '[]')
-    return Array.isArray(v) ? [...new Set(v.filter((x): x is string => typeof x === 'string' && x in ACH))] : []
-  } catch { return [] }
-}
+/** What the page says while it is being fixed: the first time, and the second time. */
+const FIX_NOTES: { en: string; ja: string }[] = [
+  { en: 'The site is being fixed because you broke it. Please do not do it again.', ja: 'サイトを修理しています。あなたが壊したからです。もう二度としないでください。' },
+  { en: 'The site is being fixed AGAIN, because you broke it AGAIN. I did say do not do it again. There will not be a third time. Probably.', ja: 'サイトをまた修理しています。あなたがまた壊したからです。二度としないでと言いましたよね。三回目はありません。たぶん。' },
+]
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
 
 type Stamp = { id: number; x: number; y: number; text: string }
@@ -126,14 +125,15 @@ export default function Chaos() {
   const [roll, setRoll] = useState(false)
   const [progress, setProgress] = useState(0)
   const [nap, setNap] = useState(false)
-  // achievements are remembered in this browser, so being evicted (or coming back later) does not reset the count
-  const [ach, setAch] = useState<string[]>(loadAch)
+  // the count starts again on a refresh or a normal exit; it is kept only after an eviction or a Chaos crash (see achievementsStore)
+  const [ach, setAch] = useState<string[]>(takeInitialAchievements)
   const [achOpen, setAchOpen] = useState(false)
+  useEffect(() => { achievementsTaken() }, [])
   const awarded = useRef(new Set<string>(ach))
   const award = useCallback((id: string) => {
     if (awarded.current.has(id)) return
     awarded.current.add(id)
-    setAch((a) => { const n = [...a, id]; try { localStorage.setItem(ACH_KEY, JSON.stringify(n)) } catch { /* storage can be blocked */ } return n })
+    setAch((a) => { const n = [...a, id]; setCurrentAchievements(n); return n })
     setTimeout(() => sfx('chime'), 350)
   }, [])
   const [bubble, setBubble] = useState<string | null>(null)
@@ -151,7 +151,9 @@ export default function Chaos() {
   const [pileStage, setPileStage] = useState(0)
   const [restoring, setRestoring] = useState(false) // the page is still being put back: no second press yet
   const restoreTimer = useRef(0)
-  const [count, setCount] = useState(5) // the "you have to wait" countdown: starts at 5 and does not stop at 0
+  const stopWork = useRef<(() => void) | null>(null)
+  useEffect(() => () => { stopWork.current?.() }, [])
+  const [count, setCount] = useState(10) // the "you have to wait" countdown: starts at 10 and does not stop at 0
   useEffect(() => {
     if (!restoring) return
     const id = window.setInterval(() => setCount((c) => (c <= -10 ? c : c - 1)), 1000)
@@ -501,6 +503,18 @@ export default function Chaos() {
     return () => { removeEventListener('scroll', onScroll); document.documentElement.classList.remove('shake') }
   }, [run, award])
 
+  // cookie: type "cookie" anywhere to bring the cookie banner back, every time
+  useEffect(() => {
+    let buf = ''
+    const k = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).closest('input, textarea, select')) return
+      buf = (buf + e.key.toLowerCase()).slice(-6)
+      if (buf === 'cookie') { buf = ''; setBites(0); setCookie(true) }
+    }
+    addEventListener('keydown', k)
+    return () => removeEventListener('keydown', k)
+  }, [])
+
   // omae: type it anywhere
   useEffect(() => {
     if (!on('omae')) return
@@ -657,10 +671,11 @@ export default function Chaos() {
     collapse.current = null
     sfx('restore')
     setPile(false)
-    setCount(5)
+    setCount(10)
     setRestoring(true)
+    stopWork.current?.(); stopWork.current = startConstruction() // construction noise while the page is "fixed"
     clearTimeout(restoreTimer.current)
-    restoreTimer.current = window.setTimeout(() => { setRestoring(false); quietRef.current = false }, ms + 300)
+    restoreTimer.current = window.setTimeout(() => { setRestoring(false); quietRef.current = false; stopWork.current?.(); stopWork.current = null }, ms + 300)
     sched.current?.end(moonId.current)
   }, [])
 
@@ -703,6 +718,7 @@ export default function Chaos() {
       if (!reduced()) { document.documentElement.classList.add('shake'); setTimeout(() => document.documentElement.classList.remove('shake'), 1100) }
       setTimeout(() => {
         clicks.current = 0
+        keepAchievementsForNextVisit()
         setEvicted(true)
         setMode('calm')
         scrollTo({ top: 0, behavior: 'instant' })
@@ -847,10 +863,14 @@ export default function Chaos() {
           🌙 <span>{lang === 'en' ? 'Do not press' : '押さないで'}</span>
         </button>
       )}
+      {restoring && <div className="blank-site" aria-hidden="true" />}
       {restoring && (
         <div className="wait-note" role="status">
-          <p>{lang === 'en' ? 'Yes, you have to wait.' : 'はい、待つ必要があります。'}</p>
-          <strong aria-hidden="true">{count}</strong>
+          <div className="wait-main">
+            <p>{lang === 'en' ? 'Yes, you have to wait.' : 'はい、待つ必要があります。'}</p>
+            <strong aria-hidden="true">{count}</strong>
+          </div>
+          <p className="wait-sub">{FIX_NOTES[Math.min(pileStage, 1)][lang]}</p>
         </div>
       )}
       {pile && noteUp && (
@@ -863,7 +883,7 @@ export default function Chaos() {
       {ach.length > 0 && (
         <div className="ach">
           <button className="btn" aria-expanded={achOpen} onClick={() => setAchOpen((o) => !o)}>
-            {lang === 'en' ? 'Achievements' : '実績'} {ach.length}/{Object.keys(ACH).length}
+            <span className="ach-word">{lang === 'en' ? 'Achievements' : '実績'}</span> {ach.length}/{Object.keys(ACH).length}
           </button>
           {achOpen && <ul>{ach.map((a) => <li key={a}>{ACH[a][lang]}</li>)}</ul>}
         </div>
@@ -1043,7 +1063,7 @@ function gravityCollapse(dir: 1 | -1 = 1): { stop: (slow?: boolean) => number } 
   draw()
   return {
     stop(slow = false) {
-      const ms = slow ? 15000 : 900 // "slowly" means slowly: everything drifts back over fifteen seconds, with a countdown
+      const ms = slow ? 20000 : 900 // "slowly" means slowly: everything drifts back over twenty seconds, behind a blank page, with a countdown
       cancelAnimationFrame(raf)
       Runner.stop(runner); Composite.clear(engine.world, false); Engine.clear(engine)
       for (const i of items) { i.el.style.transition = `transform ${ms}ms cubic-bezier(.45, 0, .3, 1)`; i.el.style.transform = 'none' }

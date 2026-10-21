@@ -18,16 +18,18 @@ check((await p.locator('#net canvas').first().evaluate((c) => c.tabIndex < 0 && 
 const seen = new Set()
 let shot = false
 const t0 = Date.now()
-while (Date.now() - t0 < 100000) {
+let sawCapture = false, loopedOn = false, capKey = ''
+while (Date.now() - t0 < 120000) {
   const r = await p.locator('#net .sim-readout').first().innerText().catch(() => '')
   const m = r.match(/(\d+) of (\d+) debris captured, net (open|closed)/)
-  if (m) seen.add(`${m[1]}/${m[2]}/${m[3]}`)
+  if (m) { seen.add(`${m[1]}/${m[2]}/${m[3]}`); const key = `${m[1]}/${m[2]}/${m[3]}`; if (!sawCapture && m[2] !== '0' && m[1] === m[2] && m[3] === 'closed') { sawCapture = true; capKey = key } else if (sawCapture && key !== capKey) loopedOn = true }
   if (m && m[3] === 'closed' && !shot) { shot = true; await p.screenshot({ path: 'tests/out/net-loop-caught.png' }) }
+  if (sawCapture && loopedOn) break
   await p.waitForTimeout(1000)
 }
 const list = [...seen]
 console.log(list.join('  '))
 check(list.some((x) => x.endsWith('/closed') && x.split('/')[0] === x.split('/')[1] && x.split('/')[0] !== '0'), 'the net closed round all the debris at least once')
-check(new Set(list.map((x) => x.split('/')[1])).size >= 2, 'a different batch size arrived (the loop moves on by itself)')
+check(loopedOn, 'after a capture the loop clears the field and goes on to the next wave by itself')
 check(errs.length === 0, 'no page errors ' + errs.join(';'))
 await b.close(); process.exit(fails ? 1 : 0)

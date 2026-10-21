@@ -230,7 +230,7 @@ export default function App() {
           <div className="wrap">
             <h2 id="ct">{t(ui.contact)}</h2>
             <p style={{ maxWidth: 640 }}>{t(ui.contactBody)}</p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', margin: '16px 0' }}>
+            <div className="contact-row">
               <a className="btn" style={{ color: 'inherit' }} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} /> {links.email}</a>
               <a href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} style={{ verticalAlign: -2 }} /> LinkedIn</a>
               <a href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} style={{ verticalAlign: -2 }} /> GitHub</a>

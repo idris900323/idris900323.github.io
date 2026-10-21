@@ -4,27 +4,28 @@ import MuteButton from './chaos/MuteButton'
 
 type Lang = 'en' | 'ja'
 type L = { en: string; ja: string }
+type LT = L & { touch?: L } // `touch` replaces the text on phones and tablets, which have no Escape key
 
 // NEEDS-NATIVE-REVIEW (all JA strings in this file)
 const TITLE: L = { en: 'WARNING', ja: '警告' }
 const SUB: L = { en: 'A SERIOUS ANNOUNCEMENT (SORT OF)', ja: '重大なお知らせ（のようなもの）' }
-const CRAWL: L[] = [
+const CRAWL: LT[] = [
   { en: 'A long time ago, in a portfolio not so far away...', ja: 'ずっと昔、そう遠くないポートフォリオで…' },
   { en: 'You are about to leave the sensible side of this website. The sensible side says goodbye. It will wait for you quietly, with a cup of tea.', ja: 'あなたはこのサイトのまともな側を離れようとしています。まともな側は静かにお茶を飲みながら、あなたの帰りを待っています。' },
   { en: 'Ahead: MUSIC. Questionable music, at exactly the volume that the one person you did not want to hear it will hear it.', ja: 'この先：音楽。聞かれたくない人にだけ、ちょうど聞こえる音量の、ちょっと怪しい音楽です。' },
   { en: 'Ahead: LOUD NOISES, a rocket or two, and at least one moment that will make you say a word you would never say in an interview.', ja: 'この先：大きな音、ロケットが一つか二つ、そして面接では絶対に言わない言葉をつい口にしてしまう瞬間が、少なくとも一つ。' },
   { en: 'The author promises all of this was done on purpose. The author also promises the little robot is not plotting anything. The robot declined to comment.', ja: '作者は、これらすべてがわざとだと約束します。小さなロボットが何も企んでいないことも約束します。ロボットはコメントを控えています。' },
   { en: 'Do NOT open this at work, in a meeting, on a train, or in front of anyone you hope will hire you. If you are a professor: hello, we are very sorry, please press back.', ja: '職場、会議、電車の中、そして採用してほしい人の前では、開かないでください。教授の皆さま：こんにちは、申し訳ありません、お戻りください。' },
-  { en: 'If you panic, press ESCAPE. Escape is your friend. Escape has never let anyone down.', ja: 'パニックになったら、Escキーを押してください。Escは味方です。Escは今まで誰も裏切ったことがありません。' },
+  { touch: { en: 'If you panic, tap RESTORE ORDER at the top of the page. It is your friend. It has never let anyone down.', ja: 'パニックになったら、ページ上部の「元に戻す」をタップしてください。味方です。今まで誰も裏切ったことがありません。' }, en: 'If you panic, press ESCAPE. Escape is your friend. Escape has never let anyone down.', ja: 'パニックになったら、Escキーを押してください。Escは味方です。Escは今まで誰も裏切ったことがありません。' },
   { en: 'Press OK only if you accept all of the above, and a few things that were not mentioned above.', ja: '上記すべてと、上記に書かれていないいくつかのことに同意する場合のみ、OKを押してください。' },
 ]
 // The first screen is deliberately plain and professional: it says what this mode is before anything playful happens.
-const NOTICE: { title: L; body: L[]; back: L; go: L } = {
+const NOTICE: { title: L; body: LT[]; back: L; go: L } = {
   title: { en: 'Before you continue', ja: '続ける前に' },
   body: [
     { en: 'The mode behind this button was made as a joke by the author of this portfolio. It is not part of the professional presentation of the work, and it has no bearing on any application or evaluation.', ja: 'このボタンの先のモードは、本ポートフォリオの作者が冗談として作成したものです。作品の専門的な紹介には含まれず、応募や評価とは一切関係がありません。' },
     { en: 'It contains music, loud sound effects, sudden visual effects and humour that is not suitable for a workplace, a meeting or an interview.', ja: '音楽、大きな効果音、突然の視覚効果、そして職場・会議・面接にはふさわしくないユーモアが含まれます。' },
-    { en: 'If you are reviewing this portfolio in a professional capacity, please go back: everything relevant is in the standard version. If you proceed, you can leave at any time with the Escape key or the Restore order button.', ja: '専門的な立場でこのポートフォリオをご覧の場合は、お戻りください。必要な内容はすべて通常版にあります。続ける場合も、Escキーまたは「元に戻す」ボタンでいつでも終了できます。' },
+    { en: 'If you are reviewing this portfolio in a professional capacity, please go back: everything relevant is in the standard version. If you proceed, you can leave at any time with the Escape key or the Restore order button.', ja: '専門的な立場でこのポートフォリオをご覧の場合は、お戻りください。必要な内容はすべて通常版にあります。続ける場合も、Escキーまたは「元に戻す」ボタンでいつでも終了できます。', touch: { en: 'If you are reviewing this portfolio in a professional capacity, please go back: everything relevant is in the standard version. If you proceed, you can leave at any time with the Restore order button at the top of the page.', ja: '専門的な立場でこのポートフォリオをご覧の場合は、お戻りください。必要な内容はすべて通常版にあります。続ける場合も、ページ上部の「元に戻す」ボタンでいつでも終了できます。' } },
   ],
   back: { en: 'Go back', ja: '戻る' },
   go: { en: 'Proceed', ja: '進む' },
@@ -48,7 +49,9 @@ const STEPS: { q: L; yes: L; no: L }[] = [
 export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; onConfirm: () => void; onCancel: () => void }) {
   const [step, setStep] = useState(-2) // -2 = the plain notice, -1 = the crawl, 0 and up = the questions
   const reduced = useMemo(() => matchMedia('(prefers-reduced-motion: reduce)').matches, [])
+  const touch = useMemo(() => matchMedia('(pointer: coarse)').matches, [])
   const t = (l: L) => l[lang]
+  const tt = (l: LT) => (touch && l.touch ? l.touch : l)[lang]
   // the crawl has its own music: a looping chiptune track that runs until the visitor presses OK or leaves
   const [ready, setReady] = useState(reduced)
   const [canSkip, setCanSkip] = useState(false)
@@ -106,7 +109,7 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
       {step === -2 ? (
         <div className="notice">
           <h2>{t(NOTICE.title)}</h2>
-          {NOTICE.body.map((b) => <p key={b.en}>{t(b)}</p>)}
+          {NOTICE.body.map((b) => <p key={b.en}>{tt(b)}</p>)}
           <div className="notice-actions">
             <button className="btn" autoFocus onClick={onCancel}>{t(NOTICE.back)}</button>
             <button className="btn notice-go" onClick={() => setStep(-1)}>{t(NOTICE.go)}</button>
@@ -129,7 +132,7 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
               <div className="crawl-inner" ref={crawlRef} onAnimationEnd={() => setReady(true)}>
                 <h2>{t(TITLE)}</h2>
                 <h3>{t(SUB)}</h3>
-                {CRAWL.map((p) => <p key={p.en}>{t(p)}</p>)}
+                {CRAWL.map((p) => <p key={p.en}>{tt(p)}</p>)}
               </div>
             </div>
           </div>

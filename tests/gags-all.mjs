@@ -126,6 +126,12 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
     await sleep(3600)
     out((await p.locator('.omae').count()) === 0, `the omae screen goes away by itself (time ${n})`)
   }
+  for (let n = 1; n <= 2; n++) {
+    await p.keyboard.type('cookie'); await sleep(500)
+    out((await p.locator('.cookie').count()) === 1, `typing cookie brings the cookie banner (time ${n})`)
+    await p.getByRole('button', { name: 'Eat it' }).click(); await sleep(4800)
+    out((await p.locator('.cookie').count()) === 0 && (await p.locator('.cookie-storm').count()) === 0, `Eat it fills the screen with cookies, then they clear (time ${n})`)
+  }
   out(p.errs.length === 0, 'no page errors ' + p.errs.join(';'))
   await p.context().close()
 }
@@ -146,15 +152,17 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   await sleep(3000)
   out((await p.evaluate(() => document.documentElement.classList.contains('all-visible'))), 'the restore is still going after 4.5 s (slow)')
   const wait1 = await p.locator('.wait-note').innerText().catch(() => '')
-  out(/Yes, you have to wait/.test(wait1), 'the wait notice is up: ' + wait1.replace(/\s+/g, ' '))
+  out(/Yes, you have to wait/.test(wait1) && /because you broke it/.test(wait1) && /do not do it again/i.test(wait1), 'the wait notice is up: ' + wait1.replace(/\s+/g, ' '))
   await sleep(7000)
   const wait2 = await p.locator('.wait-note strong').innerText().catch(() => '')
   out(Number(wait2) < 0, 'the countdown has passed zero (' + wait2 + ')')
-  await sleep(5000)
-  out(!(await p.evaluate(() => document.documentElement.classList.contains('all-visible'))) && (await p.locator('.moon').count()) === 1, 'restore finished, the moon button is back')
+  const blank = await p.locator('.blank-site').count()
+  out(blank === 1, 'the page is blank while it is being fixed')
+  await sleep(10000)
+  out(!(await p.evaluate(() => document.documentElement.classList.contains('all-visible'))) && (await p.locator('.moon').count()) === 1 && (await p.locator('.blank-site').count()) === 0, 'restore finished: the page is back, the moon button is back')
   await press()
   out((await p.locator('.pile-note.angry').count()) === 1, 'second press: the angry notice shows')
-  await p.locator('.pile-x').click(); await sleep(17000)
+  await p.locator('.pile-x').click(); await sleep(23000)
   await p.getByRole('button', { name: /Do not press/ }).click(); await sleep(1500)
   out((await p.locator('.rick').count()) === 1, 'third press: the song')
   void mid

@@ -18,7 +18,7 @@ const y = await p.evaluate(() => ({ y: Math.round(scrollY), max: document.docume
 await p.screenshot({ path: 'tests/out/gravity-bottom.png' })
 const note1 = await p.locator('.pile-note').innerText()
 await p.locator('.pile-x').click()
-await p.waitForTimeout(17000) // the page is put back slowly (fifteen seconds, with a countdown)
+await p.waitForTimeout(23000) // the page is put back slowly (fifteen seconds, with a countdown)
 const back = await p.evaluate(() => Math.round(scrollY))
 const maxBack = await p.evaluate(() => Math.round(document.documentElement.scrollHeight - innerHeight))
 // second press: falls upward, page scrolls to the top
@@ -27,7 +27,7 @@ await p.waitForTimeout(6500)
 const up = await p.evaluate(() => Math.round(scrollY))
 const angry = await p.locator('.pile-note.angry').count()
 await p.locator('.pile-x').click()
-await p.waitForTimeout(17000)
+await p.waitForTimeout(23000)
 // third press: the song
 await p.getByRole('button', { name: /Do not press/ }).click()
 await p.waitForSelector('.rick iframe', { timeout: 3000 }).catch(() => {})

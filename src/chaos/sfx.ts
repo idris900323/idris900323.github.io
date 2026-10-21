@@ -186,6 +186,35 @@ export function startMusic(): () => void {
 }
 
 /** The long falling sound: wind that drops away (down) or climbs (up). */
+/**
+ * Construction site: hammering in quick runs, a drill every few seconds, a metal clang now and then, and a reversing truck beeping.
+ * Used while the page is being "fixed" after the gravity gag. Returns a function that stops it.
+ */
+export function startConstruction(): () => void {
+  const c = ac()
+  if (!c) return () => {}
+  let alive = true
+  let nextHammer = 0, nextDrill = 1.5, nextBeep = 3, nextClang = 2.5
+  const t0 = c.currentTime
+  const timer = window.setInterval(() => {
+    if (!alive) return
+    const now = c.currentTime - t0
+    const hammer = (d: number) => { noise(c, 0.05, 3200, 900, 0.8, d, 'bandpass'); tone(c, 'square', 190, 80, 0.07, 0.45, d) }
+    if (now >= nextHammer) { // a run of 2 to 4 knocks
+      const n = 2 + Math.floor(Math.random() * 3)
+      for (let k = 0; k < n; k++) hammer(k * 0.24)
+      nextHammer = now + n * 0.24 + 0.5 + Math.random() * 0.9
+    }
+    if (now >= nextDrill) { // buzzing drill
+      for (let k = 0; k < 26; k++) { noise(c, 0.035, 2600, 1800, 0.5, k * 0.04, 'bandpass'); if (k % 2 === 0) tone(c, 'sawtooth', 150 + k * 2, 170 + k * 2, 0.04, 0.35, k * 0.04) }
+      nextDrill = now + 4.5 + Math.random() * 3
+    }
+    if (now >= nextClang) { tone(c, 'triangle', 880, 640, 0.45, 0.5); tone(c, 'sine', 1320, 990, 0.35, 0.25); nextClang = now + 3.5 + Math.random() * 3 }
+    if (now >= nextBeep) { for (let k = 0; k < 4; k++) tone(c, 'square', 1000, 1000, 0.2, 0.3, k * 0.5); nextBeep = now + 7 + Math.random() * 3 }
+  }, 120)
+  return () => { alive = false; clearInterval(timer) }
+}
+
 export function fall(dir: 1 | -1) {
   const c = ac()
   if (!c) return

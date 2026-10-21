@@ -53,11 +53,11 @@ export default function NetView({ lang, onEvent }: { lang: Lang; onEvent?: (e: N
     const s = sim.current, m = mission.current
     m.wave++
     clearDebris(s)
-    const count = Math.min(MAX_DEBRIS, 2 + (m.wave % 2)) // 3, 2, 3, 2, ...
+    const count = Math.min(MAX_DEBRIS, 2) // two pieces per wave: the net reliably closes round them
     for (let k = 0; k < count; k++) {
       const a = ((k + Math.random() * 0.7) / count) * Math.PI * 2 + m.wave * 1.3
       const r = 2.15 + Math.random() * 0.25
-      const sp = 0.19 + Math.random() * 0.05
+      const sp = 0.21 + Math.random() * 0.04
       const tx = (Math.random() - 0.5) * 0.6, ty = (Math.random() - 0.5) * 0.6
       const x = r * Math.cos(a), y = r * Math.sin(a), L = Math.hypot(tx - x, ty - y)
       spawnDebris(s, x, y, ((tx - x) / L) * sp, ((ty - y) / L) * sp)

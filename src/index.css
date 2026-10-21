@@ -354,3 +354,27 @@ p, li, figcaption { text-wrap: pretty; }
 .notice-go { border-color: var(--accent); }
 
 .gate-card .caught { font-size: clamp(18px, 2.4vw, 24px); line-height: 1.5; margin: 0 0 8px; color: #fff; }
+
+/* Contact links: one tidy row on desktop, an even grid on phones */
+.contact-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin: 16px 0; }
+@media (max-width: 600px) {
+  .contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .contact-row > :first-child { grid-column: 1 / -1; }
+  .contact-row > * { justify-content: center; text-align: center; min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+/* Floating Chaos controls on phones: small, at the very edges, so they never sit over the text */
+@media (max-width: 700px) {
+  .sfx-btn { width: 36px !important; height: 36px; min-height: 36px; left: auto !important; right: 6px !important; top: 68px !important; opacity: .92; }
+  .ach { left: auto !important; right: 6px !important; top: 110px !important; bottom: auto !important; text-align: right; }
+  .ach .btn { min-height: 30px; padding: 2px 10px; font-size: 12px; opacity: .92; }
+  .ach .ach-word { display: none; }
+  .ach .btn::before { content: '★ '; }
+  .ach ul { font-size: 12px; padding: 6px 10px; text-align: left; }
+  .moon { width: 52px !important; left: 6px !important; bottom: max(6px, env(safe-area-inset-bottom)) !important; border-width: 3px; box-shadow: 0 4px 0 #5a0000, 0 8px 12px rgba(0, 0, 0, .35); font-size: 22px; }
+  .moon span { display: none; }
+}
+@media (max-width: 600px) {
+  .cover { padding-top: 28px !important; padding-bottom: 18px !important; }
+  .cover .wrap > svg, .cover .wrap > div > svg { width: 68px; height: auto; margin-top: 4px; }
+}
