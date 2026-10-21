@@ -1,0 +1,10 @@
+import { chromium } from '@playwright/test'
+const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
+const p = await b.newPage({ viewport: { width: 1280, height: 900 } })
+await p.goto(process.argv[2] ?? 'http://localhost:4173/', { waitUntil: 'networkidle' })
+const g = p.locator('.gallery').filter({ hasText: /Expo|IISc/ }).last()
+await g.scrollIntoViewIfNeeded(); await p.waitForTimeout(600)
+await p.screenshot({ path: 'tests/out/field-1.png' })
+await g.locator('.thumb').nth(3).click(); await p.waitForTimeout(500)
+await p.screenshot({ path: 'tests/out/field-2.png' })
+await b.close()

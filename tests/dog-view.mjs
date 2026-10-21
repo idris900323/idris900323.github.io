@@ -1,0 +1,22 @@
+import { chromium } from '@playwright/test'
+const url = process.argv[2] ?? 'http://localhost:5173/'
+const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
+const p = await b.newPage({ viewport: { width: 1280, height: 1000 } })
+const errs = []
+p.on('pageerror', (e) => errs.push(e.message))
+await p.goto(url, { waitUntil: 'networkidle' })
+await p.evaluate(() => document.querySelector('#quadrupeds')?.scrollIntoView())
+await p.waitForTimeout(1500)
+await p.evaluate(() => document.querySelector('#quadrupeds .interactive')?.scrollIntoView())
+await p.waitForTimeout(2500)
+await p.locator('#quadrupeds canvas').evaluate((el) => el.scrollIntoView({ block: 'center' }))
+await p.waitForTimeout(2500)
+await p.screenshot({ path: 'tests/out/dog-fwd.png' })
+await p.getByRole('button', { name: /Turn left/ }).click()
+await p.waitForTimeout(5500)
+await p.screenshot({ path: 'tests/out/dog-turn.png' })
+await p.getByRole('button', { name: /Spider \(2 joints/ }).click()
+await p.waitForTimeout(1500)
+await p.screenshot({ path: 'tests/out/spider.png' })
+console.log(errs.length ? 'ERRORS ' + errs.join('|') : 'no errors')
+await b.close()

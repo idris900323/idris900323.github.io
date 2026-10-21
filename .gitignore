@@ -1,0 +1,22 @@
+
+.DS_Store
+brag-output-*/composition/.hyperframes/
+brag-output-*/composition/node_modules/
+dist
+docs/*GUIDE*.md
+docs/audits/
+docs/blocklist.txt
+docs/open-questions.md
+node_modules
+src/assets/raw/
+tests/out/
+
+# Private working documents (kept on disk, never committed)
+docs/BUILD-REPORT.md
+docs/improvement-audit.md
+docs/PUBLISH-CHECKLIST.md
+docs/PRIVACY-SWEEP.md
+docs/open-questions.md
+docs/blocklist.txt
+docs/audits/
+docs/*GUIDE*.md

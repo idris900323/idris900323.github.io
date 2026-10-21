@@ -1,0 +1,10 @@
+import { chromium } from '@playwright/test'
+const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
+const p = await b.newPage({ viewport: { width: 1366, height: 768 } })
+await p.goto(process.argv[2] ?? 'http://localhost:4173/', { waitUntil: 'networkidle' })
+await p.evaluate(() => document.getElementById('subtlebotic').scrollIntoView())
+await p.waitForTimeout(1500)
+await p.locator('#subtlebotic .thumb').nth(1).click()
+await p.waitForTimeout(600)
+await p.screenshot({ path: 'tests/out/subtlebotic.png' })
+await b.close()

@@ -1,0 +1,266 @@
+[
+  {
+    "id": "g1",
+    "context": "Press the Moon: page collapses into a heap (G1).",
+    "options": [
+      "Control: Gravity was not in the budget.",
+      "Turns out the wires were the only thing holding this up.",
+      "Fixing: please hold."
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g2",
+    "context": "Title prank: letters of the name get knocked off and snap back (G2).",
+    "options": [
+      "Letters are 3% less stable than my last PID.",
+      "Please re-sort. I am only a mild mess.",
+      "Autocorrect for names: unavailable in space."
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g3",
+    "context": "Click stamps (sound words are the caption; JA uses onomatopoeia).",
+    "options": [
+      "BONK",
+      "ZAP",
+      "PING"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g4",
+    "context": "Barrel roll (Konami code or typing roll).",
+    "options": [
+      "Do a barrel roll. (Yes, I know.)",
+      "Orientation check: nominal.",
+      "Please remain seated."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g8",
+    "context": "Scout naps after 10 s idle; tab title changes when you leave.",
+    "options": [
+      "I was just resting my servos.",
+      "Scout misses you",
+      "Come back, the robots are fine (mostly)"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g12",
+    "context": "Selecting text shows a small Scout.",
+    "options": [
+      "Highlighting facts. Respect.",
+      "Underlining? Bold choice.",
+      "Copying is a form of flattery."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g13",
+    "context": "Console message banner for people who open DevTools.",
+    "options": [
+      "Hello, fellow tinkerer. Opening the console is how I got here too.",
+      "Hire me (politely).",
+      "Bugs are features with poor marketing."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g14",
+    "context": "Fake cookie banner (edible cookies).",
+    "options": [
+      "We use cookies: the edible kind.",
+      "This site stores no data. The robot eats the cookies.",
+      "Accept? Scout already did."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g15",
+    "context": "Thank-you finale at the contact section.",
+    "options": [
+      "Message received on Earth. And probably Japan.",
+      "Signal sent. Please reply before the battery dies.",
+      "Thank you for scrolling all the way down."
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p2a",
+    "context": "8-bit computer: counter overflows 255 to 0.",
+    "options": [
+      "Integer overflow: I am now 0 years old.",
+      "Rolled over. Starting again, wiser.",
+      "Eight bits is a lot, until it is not."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p2b",
+    "context": "8-bit computer: illegal opcode.",
+    "options": [
+      "That is not an instruction. Same as my sleep schedule.",
+      "Unknown opcode. Politely refusing.",
+      "Instruction not found. Searching the breadboard."
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p2c",
+    "context": "8-bit computer: HLT.",
+    "options": [
+      "Halted. Proud of me.",
+      "Built from gates, vibes, and many wires.",
+      "Done. Nobody touch anything."
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p3",
+    "context": "Quadruped chaos gait.",
+    "options": [
+      "Spider-inspired, four-legs-because-budget.",
+      "Dog mode: engaged. Chasing tail: in progress.",
+      "Moonwalking is just walking with confidence."
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p5",
+    "context": "Pipe sim: leak found.",
+    "options": [
+      "Leak located. Duck evidence: preserved.",
+      "Scanning segment 4: still dry. Still suspicious.",
+      "Detected. The duck saw nothing."
+    ],
+    "selected": null,
+    "custom": "Leak located. Segment flagged for inspection.",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p6a",
+    "context": "Swarm: boss added.",
+    "options": [
+      "Decentralised: nobody is in charge and somehow it works.",
+      "Boss crowned. Swarm: relieved, then dependent.",
+      "A hat does not make a controller."
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p6b",
+    "context": "Swarm: boss removed.",
+    "options": [
+      "Boss removed. Swarm: ok, we will manage.",
+      "Centralised version: lying down. Decentralised: carrying on.",
+      "Consensus reached. Lunch cancelled."
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p8a",
+    "context": "PID: oscillatory preset.",
+    "options": [
+      "Oscillatory: it is not a bug, it is enthusiasm.",
+      "The arm is very excited about the setpoint.",
+      "Overshoot: a tiny victory lap."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p8d",
+    "context": "PID: auto-tune running.",
+    "options": [
+      "Asking the motor how it feels.",
+      "Auto-tune (demo): negotiating with physics.",
+      "Searching gains politely."
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p8e",
+    "context": "PID: tuned.",
+    "options": [
+      "Ahh. Tuned.",
+      "Settled. Nobody panic.",
+      "Critically damped, emotionally stable."
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p9a",
+    "context": "Net system: debris tries to escape.",
+    "options": [
+      "Capture rate: socks 1, philosophy 0.",
+      "The debris has big plans and no thrusters.",
+      "Net closed. Debris: reconsidering."
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p9b",
+    "context": "Net system: a node fails.",
+    "options": [
+      "Node 3 is feeling unwell. The swarm adapts.",
+      "One satellite fainted. Others: carry on.",
+      "Decentralised: the show goes on."
+    ],
+    "selected": null,
+    "custom": "A node has gone quiet.",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "warn",
+    "context": "Transformation alert when CHAOS is pressed.",
+    "options": [
+      "WARNING: professionalism leaking",
+      "ALERT: tidy mode unplugged",
+      "Notice: seriousness is leaving the building"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  }
+]

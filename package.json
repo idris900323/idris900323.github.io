@@ -1,0 +1,50 @@
+{
+  "name": "idris-sadiq-portfolio",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "check:publish": "node scripts/check-publish.mjs",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "test": "vitest",
+    "typecheck": "tsc -b --noEmit",
+    "check:jokes": "node scripts/check-jokes.mjs",
+    "media": "node scripts/optimize-images.mjs",
+    "shots": "node tests/shots.mjs",
+    "workbook": "node scripts/gen-workbook.mjs",
+    "test:run": "vitest run",
+    "export:public": "node scripts/export-public.mjs",
+    "test:e2e": "node tests/calm-check.mjs && node tests/chaos-check.mjs && node tests/esc-collapse.mjs && node tests/browsers.mjs && node tests/mobile.mjs && node tests/break-ui.mjs && node tests/contact-cleanup.mjs && node tests/gate.mjs && node tests/gate-skip.mjs && node tests/net-loop.mjs && node tests/gallery-nav.mjs && node tests/lightbox.mjs && node tests/habit-links.mjs",
+    "test:chaos": "node tests/podcast.mjs && node tests/gravity.mjs && node tests/rick-filter.mjs && node tests/chaos-gags2.mjs && node tests/flyby-crash.mjs && node tests/robot-evict.mjs && node tests/section-notes.mjs && node tests/cena.mjs && node tests/enlarge.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/noto-sans-jp": "^5.3.1",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/m-plus-rounded-1c": "^5.3.0",
+    "lucide-react": "^1.59.0",
+    "matter-js": "^0.20.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/matter-js": "^0.20.2",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "oxlint": "^1.88.0",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

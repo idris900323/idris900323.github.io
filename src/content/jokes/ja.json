@@ -1,0 +1,266 @@
+[
+  {
+    "id": "g1",
+    "context": "Press the Moon: page collapses into a heap (G1).",
+    "options": [
+      "管制：重力は予算に入っていませんでした。",
+      "配線だけがこのページを支えていたようです。",
+      "修復中です。しばらくお待ちください。"
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g2",
+    "context": "Title prank: letters of the name get knocked off and snap back (G2).",
+    "options": [
+      "文字の安定性は前回のPIDより3%低めです。",
+      "並べ直してください。少しだけ散らかっています。",
+      "名前の自動修正は宇宙では使えません。"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g3",
+    "context": "Click stamps (sound words are the caption; JA uses onomatopoeia).",
+    "options": [
+      "ドーン",
+      "ガチャ",
+      "ピコーン"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g4",
+    "context": "Barrel roll (Konami code or typing roll).",
+    "options": [
+      "バレルロール。（お約束です。）",
+      "姿勢チェック：問題なし。",
+      "座ったままでお待ちください。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g8",
+    "context": "Scout naps after 10 s idle; tab title changes when you leave.",
+    "options": [
+      "サーボを休ませていただけです。",
+      "スカウトが待っています",
+      "戻ってきて、ロボットは（ほぼ）無事です"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g12",
+    "context": "Selecting text shows a small Scout.",
+    "options": [
+      "事実に線を引いていますね。素晴らしいです。",
+      "ハイライトですか。大胆ですね。",
+      "コピーは最大の賛辞です。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g13",
+    "context": "Console message banner for people who open DevTools.",
+    "options": [
+      "こんにちは、同じ工作好きの方。私もコンソールを開いてここに来ました。",
+      "よろしければ、ご連絡ください。",
+      "バグは宣伝が下手な機能です。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g14",
+    "context": "Fake cookie banner (edible cookies).",
+    "options": [
+      "クッキーを使います。食べられるほうです。",
+      "このサイトは情報を保存しません。クッキーはロボットが食べます。",
+      "同意しますか？スカウトはもう食べました。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "g15",
+    "context": "Thank-you finale at the contact section.",
+    "options": [
+      "地球で受信しました。たぶん日本でも。",
+      "信号を送りました。電池が切れる前にご返信ください。",
+      "最後までスクロールしていただき、ありがとうございます。"
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p2a",
+    "context": "8-bit computer: counter overflows 255 to 0.",
+    "options": [
+      "整数オーバーフロー：0歳になりました。",
+      "一周しました。賢くなって再出発です。",
+      "8ビットは広い…あふれるまでは。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p2b",
+    "context": "8-bit computer: illegal opcode.",
+    "options": [
+      "それは命令ではありません。私の睡眠スケジュールと同じです。",
+      "未知のオペコードです。丁重にお断りします。",
+      "命令が見つかりません。ブレッドボードを捜索中。"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p2c",
+    "context": "8-bit computer: HLT.",
+    "options": [
+      "停止しました。誇らしいです。",
+      "ゲートと気合と大量の配線でできています。",
+      "完了です。誰も触らないでください。"
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p3",
+    "context": "Quadruped chaos gait.",
+    "options": [
+      "クモ型、足が4本なのは予算のためです。",
+      "犬モード起動。しっぽ追跡中。",
+      "ムーンウォークは自信のある歩行です。"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p5",
+    "context": "Pipe sim: leak found.",
+    "options": [
+      "リーク特定。アヒルの証拠は保全済みです。",
+      "区間4をスキャン中：まだ乾いています。まだ怪しいです。",
+      "検出しました。アヒルは何も見ていません。"
+    ],
+    "selected": null,
+    "custom": "リーク特定。該当区間を点検対象にしました。",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p6a",
+    "context": "Swarm: boss added.",
+    "options": [
+      "分散型：誰も指揮しないのに、なぜか動きます。",
+      "ボス就任。群れ：安心、そして依存。",
+      "帽子をかぶってもコントローラにはなりません。"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p6b",
+    "context": "Swarm: boss removed.",
+    "options": [
+      "ボスがいなくなりました。群れ：なんとかします。",
+      "集中型は倒れ、分散型は続行中。",
+      "合意に達しました。昼食は中止です。"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p8a",
+    "context": "PID: oscillatory preset.",
+    "options": [
+      "振動プリセット：バグではなく、熱意です。",
+      "アームは目標値にとても興奮しています。",
+      "オーバーシュート：小さな凱旋です。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p8d",
+    "context": "PID: auto-tune running.",
+    "options": [
+      "モーターの調子を聞いています。",
+      "自動調整（デモ）：物理と交渉中です。",
+      "ゲインを丁寧に探索中です。"
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p8e",
+    "context": "PID: tuned.",
+    "options": [
+      "ふう。調整完了です。",
+      "落ち着きました。慌てないでください。",
+      "臨界減衰、気持ちも安定です。"
+    ],
+    "selected": 1,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p9a",
+    "context": "Net system: debris tries to escape.",
+    "options": [
+      "捕獲率：靴下1、哲学0。",
+      "デブリは大志を抱きましたが、推進器はありません。",
+      "ネットが閉じました。デブリは再考中です。"
+    ],
+    "selected": 2,
+    "custom": "",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "p9b",
+    "context": "Net system: a node fails.",
+    "options": [
+      "ノード3の調子が悪いようです。群れは適応します。",
+      "衛星が1機気絶しました。他は続行します。",
+      "分散型：ショーは続きます。"
+    ],
+    "selected": null,
+    "custom": "ノードが1つ沈黙しました。",
+    "status": "CHOSEN"
+  },
+  {
+    "id": "warn",
+    "context": "Transformation alert when CHAOS is pressed.",
+    "options": [
+      "警告：プロ意識が漏れています",
+      "警報：整理整頓モードが外れました",
+      "お知らせ：真面目さが外出中です"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "CHOSEN"
+  }
+]
