@@ -98,8 +98,8 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
 
   const advance = () => { sfx(step + 1 >= STEPS.length ? 'fanfare' : 'blip'); if (step + 1 >= STEPS.length) onConfirm(); else setStep(step + 1) }
   const s = step >= 0 ? STEPS[step] : null
-  // the "yes" button swaps sides each step, so a quick double click does not skip a question
-  const flip = (step % 2 === 1) !== (step === STEPS.length - 1) // the last question has Yes on the left
+  // the highlighted "yes" is on the right for every question except the last one, where Yes (dark) is on the left and the highlighted button is No
+  const flip = step === STEPS.length - 1
 
   return (
     <div className={step === -2 ? 'gate pro' : 'gate'} role="dialog" aria-modal="true" aria-label={lang === 'en' ? 'Before you enter Chaos mode' : 'カオスモードに入る前に'}>
