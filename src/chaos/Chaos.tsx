@@ -429,11 +429,11 @@ export default function Chaos() {
     return () => { clearTimeout(t); removeEventListener('resize', measure) }
   }, [])
 
-  // random shake + rick roll while scrolling: decided once per page load (about 8 in 10 get it), after a random amount of scrolling
+  // random shake + rick roll while scrolling: once per page load (the scheduler remembers), after a random amount of scrolling. A 'rolled' flag in sessionStorage only exists so tests can switch it off.
   useEffect(() => {
     if (!on('rickRoll')) return
     try { if (sessionStorage.getItem('rolled')) return } catch { /* ignore */ }
-    const goal = 1800 + Math.random() * 3200 // everyone gets it, after a random amount of scrolling
+    const goal = 1500 + Math.random() * 2700 // everyone gets it, after a random amount of scrolling
     let travelled = 0, last = scrollY, done = false
     const onScroll = () => {
       if (document.documentElement.classList.contains('all-visible')) { last = scrollY; return } // the page falling is not reading
@@ -442,7 +442,6 @@ export default function Chaos() {
       if (done || travelled < goal) return
       if (!run('rick', 'C', true)) return
       done = true
-      try { sessionStorage.setItem('rolled', '1') } catch { /* ignore */ }
       const root = document.documentElement
       if (!reduced()) root.classList.add('shake')
       award('rick'); sfx('shake')
@@ -482,8 +481,8 @@ export default function Chaos() {
   useEffect(() => {
     if (!on('cena')) return
     try { if (sessionStorage.getItem('cena')) return } catch { /* ignore */ }
-    if (Math.random() > 0.75) return
-    const goal = 5000 + Math.random() * 6000
+    if (Math.random() > 0.9) return
+    const goal = 3500 + Math.random() * 4500
     let travelled = 0, last = scrollY, done = false
     const onScroll = () => {
       if (document.documentElement.classList.contains('all-visible')) { last = scrollY; return }
@@ -491,7 +490,6 @@ export default function Chaos() {
       if (done || travelled < goal || document.documentElement.classList.contains('shake') || document.querySelector('.rick, .omae')) return
       if (!run('cena', 'C', true)) return
       done = true
-      try { sessionStorage.setItem('cena', '1') } catch { /* ignore */ }
       award('cena')
       setCena(1)
       setTimeout(() => setCena(2), 1050)
